@@ -401,4 +401,13 @@ class sfEadPlugin
     return count($materialTypes) || count($genres) || count($subjects) ||
            count($names) || count($places) || $hasNonCreationActorEvents;
   }
+
+  /**
+   * Physdesc can have nested tags. We don't want to escape the tags themselves or <lb/>s.
+   * So our compromise will be to just escape ampersands for now for this tag.
+   */
+  public function escapePhysdesc($text)
+  {
+    return str_replace('&', '&amp;', $text);
+  }
 }
