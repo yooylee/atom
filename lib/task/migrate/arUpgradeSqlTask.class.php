@@ -191,7 +191,7 @@ EOF;
       ->in(sfConfig::get('sf_lib_dir').'/task/migrate/migrations') as $filename)
     {
       // Initialize migration class
-      $className = preg_replace('/.*(arMigration\d+).*/', '$1', $filename);
+      $className = preg_replace('/.*(arMigration\d+[_]?).*/', '$1', $filename);
       $class = new $className;
 
       // This upgrade should have been applied already
