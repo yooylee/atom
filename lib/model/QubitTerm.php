@@ -126,6 +126,7 @@ class QubitTerm extends BaseTerm
     EXTERNAL_URI_ID = 166,
 
     // Relation types
+    ASSOCIATED_REPOSITORY_ID = 186,
     ACCESSION_ID = 167,
     RIGHT_ID = 168,
     DONOR_ID = 169,

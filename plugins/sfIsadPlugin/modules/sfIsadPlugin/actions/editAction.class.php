@@ -174,6 +174,7 @@ class sfIsadPluginEditAction extends InformationObjectEditAction
           else if (!isset($this->request->sourceId))
           {
             $item->delete();
+file_put_contents('/tmp/lol', "deleting a creation event\n", FILE_APPEND);
           }
         }
 

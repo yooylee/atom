@@ -359,8 +359,6 @@ class QubitActor extends BaseActor
     }
   }
 
-  protected $SubjectHitCount = null;
-
   public function setSubjectHitCount($count)
   {
     $this->SubjectHitCount = $count;
@@ -479,5 +477,43 @@ class QubitActor extends BaseActor
     $criteria->add(QubitEvent::ACTOR_ID, $this->id);
 
     return QubitInformationObject::get($criteria);
+  }
+
+  /**
+   * Add a relation between this actor and the specified repository.
+   *
+   * @param int repositoryId  The repository id to associate this actor with.
+   */
+  public function addRepositoryAssociation($repositoryId)
+  {
+    if ($this->isAssociatedWithRepository($repositoryId))
+    {
+      return; // Don't duplicate the association
+    }
+
+    $r = new QubitRelation;
+    $r->objectId = $this->id;
+    $r->subjectId = $repositoryId;
+    $r->typeId = QubitTerm::ASSOCIATED_REPOSITORY_ID;
+
+    $r->save();
+  }
+
+  /**
+   * Check if this actor is associated with the specified repository.
+   *
+   * @param int repositoryId  The repository to check against
+   *
+   * @return bool  True if this actor is associated with the repository, false if not.
+   */
+  public function isAssociatedWithRepository($repositoryId)
+  {
+    $c = new Criteria;
+
+    $c->add(QubitRelation::OBJECT_ID, $this->id);
+    $c->add(QubitRelation::SUBJECT_ID, $repositoryId);
+    $c->add(QubitRelation::TYPE_ID, QubitTerm::ASSOCIATED_REPOSITORY_ID);
+
+    return QubitRelation::get($c)->count() > 0;
   }
 }

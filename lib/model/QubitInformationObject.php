@@ -287,6 +287,8 @@ class QubitInformationObject extends BaseInformationObject
       $status->save($connection);
     }
 
+    $this->updateRelatedActorRepositoryAssociations();
+
     QubitSearch::getInstance()->update($this);
 
     return $this;
@@ -338,6 +340,30 @@ class QubitInformationObject extends BaseInformationObject
     QubitSearch::getInstance()->delete($this);
 
     parent::delete($connection);
+  }
+
+  /**
+   * This function iterates through all actors involved in any events related to this information
+   * object, as well as any actors that are name access points, and associates said actors
+   * with this information object's repository (if there is one).
+   */
+  private function updateRelatedActorRepositoryAssociations()
+  {
+    if (!$this->repository)
+    {
+      return;
+    }
+
+    foreach ($this->getActors() as $actor)
+    {
+      $actor->addRepositoryAssociation($this->repository->id);
+    }
+
+    foreach ($this->getNameAccessPoints() as $ap)
+    {
+      // object in this case is the actor for the name access point.
+      $ap->object->addRepositoryAssociation($this->repository->id);
+    }
   }
 
   /**
