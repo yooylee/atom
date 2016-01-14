@@ -19,6 +19,8 @@
 
 class ApiTaxonomiesBrowseAction extends QubitApiAction
 {
+  protected $public = TRUE;
+
   protected function get($request)
   {
     $taxonomy = QubitTaxonomy::getById($request->id);

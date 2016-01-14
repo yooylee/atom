@@ -23,6 +23,36 @@ class QubitAPIAction extends sfAction
   {
     $view = sfView::NONE;
 
+    $requestApiKey = $request->getHttpHeader('X-OAI-API-Key');
+
+    if (!empty($requestApiKey))
+    {
+      // Require valid API key to access CRUD endpoints
+      if (empty($requestApiKey))
+      {
+        return QubitAcl::forwardUnauthorized(true);
+      }
+      else
+      {
+        $criteria = new Criteria;
+        $criteria->add(QubitProperty::NAME, 'crudApiKey');
+        $criteria->add(QubitPropertyI18n::VALUE, $requestApiKey);
+
+        if (null == $keyProperty = QubitProperty::getOne($criteria))
+        {
+          return QubitAcl::forwardUnauthorized(true);
+        }
+
+        // Authenticate user so ACL checks can be applies in XML template# get user ID from property?
+        $user = QubitUser::getById($keyProperty->objectId);
+        $this->context->user->signIn($user);
+      }
+    }
+    else if(!$this->public)
+    {
+      return QubitAcl::forwardUnauthorized(true);
+    }
+
     try
     {
       $view = $this->process($request);
