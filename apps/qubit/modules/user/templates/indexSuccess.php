@@ -61,6 +61,15 @@
       <?php endif; ?>
     <?php endif; ?>
 
+    <?php if(isset($crud_api_key)): ?>
+    <div class="field">
+      <h3><?php echo __('Create, read, update, and delete REST API key') ?></h3>
+      <div>
+        <code><?php echo $crud_api_key ?></code>
+      </div>
+    </div>
+    <?php endif; ?>
+
     <?php if ($sf_context->getConfiguration()->isPluginEnabled('arOaiPlugin')): ?>
       <div class="field">
         <h3><?php echo __('OAI-PMH API key') ?></h3>

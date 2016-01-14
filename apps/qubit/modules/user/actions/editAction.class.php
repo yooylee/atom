@@ -29,6 +29,7 @@ class UserEditAction extends DefaultEditAction
       'password',
       'translate',
       'username',
+      'crud_api_key',
       'oai_api_key');
 
   protected function earlyExecute()
@@ -180,6 +181,7 @@ class UserEditAction extends DefaultEditAction
 
         break;
 
+      case 'crud_api_key':
       case 'oai_api_key':
         // Give user option of (re)generating or deleting OAI-PMH API key
         $choices = array(
@@ -191,8 +193,8 @@ class UserEditAction extends DefaultEditAction
         $this->form->setValidator($name, new sfValidatorString());
         $this->form->setWidget($name, new sfWidgetFormSelect(array('choices' => $choices)));
 
-        // Expose OAI-PMH API key value to template if one exists
-        if (null != $keyProperty = $this->getApiKeyProperty(sfInflector::camelize($name)))
+        // Expose API key value to template if one exists
+        if (null != $keyProperty = $this->getApiKeyProperty(lcfirst(sfInflector::camelize($name))))
         {
           $this->$name = $keyProperty->value;
         }
@@ -268,6 +270,7 @@ class UserEditAction extends DefaultEditAction
 
         break;
 
+      case 'crud_api_key':
       case 'oai_api_key':
         $keyAction = $this->form->getValue($name);
 
@@ -275,11 +278,11 @@ class UserEditAction extends DefaultEditAction
         {
           case 'generate':
             // Create user OAI-PMH key property if it doesn't exist
-            if (null == $keyProperty = $this->getApiKeyProperty(sfInflector::camelize($name)))
+            if (null == $keyProperty = $this->getApiKeyProperty(lcfirst(sfInflector::camelize($name))))
             {
               $keyProperty = new QubitProperty;
               $keyProperty->objectId = $this->resource->id;
-              $keyProperty->name = sfInflector::camelize($name);
+              $keyProperty->name = lcfirst(sfInflector::camelize($name));
             }
 
             // Generate new API key
@@ -290,7 +293,7 @@ class UserEditAction extends DefaultEditAction
 
           case 'delete':
             // Delete user OAI-PMH key property if it exists
-            if (null != $keyProperty = $this->getApiKeyProperty(sfInflector::camelize($name)))
+            if (null != $keyProperty = $this->getApiKeyProperty(lcfirst(sfInflector::camelize($name))))
             {
               $keyProperty->delete();
             }

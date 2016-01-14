@@ -23,12 +23,16 @@ class UserIndexAction extends sfAction
   {
     $this->resource = $this->getRoute()->resource;
 
-    // Get OAI API key value, if any
-    $oaiApiKeyProperty = QubitProperty::getOneByObjectIdAndName($this->resource->id, 'oaiApiKey');
-
-    if (null != $oaiApiKeyProperty)
+    foreach(array('crudApiKey', 'oaiApiKey') as $propertyName)
     {
-      $this->oai_api_key = $oaiApiKeyProperty->value;
+      // Get OAPI key value, if any
+      $keyProperty = QubitProperty::getOneByObjectIdAndName($this->resource->id, $propertyName);
+
+      if (null != $keyProperty)
+      {
+        $underscored = sfInflector::underscore($propertyName);
+        $this->$underscored = $keyProperty->value;
+      }
     }
 
     // Except for administrators, only allow users to see their own profile
