@@ -50,6 +50,10 @@ class arRestApiPluginConfiguration extends sfPluginConfiguration
       'module' => 'api',
       'action' => 'taxonomiesBrowse',
       'params' => array('id' => self::REGEX_ID)));
+
+    $this->addRoute('POST', '/api/informationobjects', array(
+      'module' => 'api',
+      'action' => 'informationobjectsCreate'));
   }
 
   protected function addRoute($method, $pattern, array $options = array())
