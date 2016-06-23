@@ -19,6 +19,9 @@
 
 class digitalObjectRegenDerivativesTask extends arBaseTask
 {
+  protected $sqlWhere = array();
+  protected $scopeMsg array();
+
   protected function configure()
   {
     //$this->addArguments(array());
@@ -35,7 +38,7 @@ class digitalObjectRegenDerivativesTask extends arBaseTask
       new sfCommandOption('json', 'j', sfCommandOption::PARAMETER_OPTIONAL, 'Limit regenerating derivatives to IDs in a JSON file', null),
       new sfCommandOption('skip-to', null, sfCommandOption::PARAMETER_OPTIONAL, 'Skip regenerating derivatives until a certain filename is encountered', null),
       new sfCommandOption('no-overwrite', 'n', sfCommandOption::PARAMETER_NONE, 'Don\'t overwrite existing derivatives (and no confirmation message)', null)
-  ));
+    ));
 
     $this->namespace = 'digitalobject';
     $this->name = 'regen-derivatives';
@@ -64,69 +67,87 @@ EOF;
       QubitSearch::disable();
     }
 
-    // Get all master digital objects
-    $query = 'SELECT do.id
-      FROM digital_object do JOIN information_object io ON do.information_object_id = io.id';
+    // Only generate derivs for digital objects that have none
+    $this->setScopeFromOption('no-overwrite', array(
+      'sql_join'  => 'LEFT JOIN digital_object child ON do.id = child.parent_id',
+      'sql_where' => 'do.parent_id IS NULL AND child.id IS NULL'));
+
+    $this->setScopeFromOption('only-externals', array(
+      'sql_where' => 'do.usage_id = '.QubitTerm::EXTERNAL_URI_ID;
+      'scope_msg' => 'external'));
+
 
     // Limit to a branch
-    if ($options['slug'])
+    $query = 'SELECT io.id, io.lft, io.rgt
+      FROM information_object io JOIN slug ON io.id = slug.object_id
+      WHERE slug.slug = ?';
+
+    $row = QubitPdo::fetchOne($q2, array($options['slug']));
+
+    if (false === $row)
     {
-      $q2 = 'SELECT io.id, io.lft, io.rgt
-        FROM information_object io JOIN slug ON io.id = slug.object_id
-        WHERE slug.slug = ?';
-
-      $row = QubitPdo::fetchOne($q2, array($options['slug']));
-
-      if (false === $row)
-      {
-        throw new sfException("Invalid slug");
-      }
-
-      $query .= ' WHERE io.lft >= '.$row->lft.' and io.rgt <= '.$row->rgt;
+      throw new sfException("Invalid slug");
     }
 
-    if ($options['only-externals'])
-    {
-      $query .= ' AND do.usage_id = '.QubitTerm::EXTERNAL_URI_ID;
+    $this->setScopeFromOption('slug', array(
+      'sql_where' => ' io.lft >= '.$row->lft.' and io.rgt <= '.$row->rgt,
+      'scope_msg' => sprintf('descendants of "%s"', $options['slug']));
+
+    // Limit to ids in JSON file
+    $ids = json_decode(file_get_contents($options['json']));
+    $this->setScopeFromOption('json', array(
+      'sql_where' => ' AND do.id IN (' . implode(', ', $ids) . ')',
+      'scope_msg' => sprintf('in "%s"', $options['json']));
+
+        }
+      }
     }
 
-    if ($options['json'])
+    private function setScopeFromOption($name, $values = array())
     {
-      $ids = json_decode(file_get_contents($options['json']));
-      $query .= ' AND do.id IN (' . implode(', ', $ids) . ')';
+      if (!isset($options['name']))
+      {
+        return;
+      }
+
+      if (isset($values['sql_join']))
+      {
+        $this->sqlJoin[] = $values['sql_join'];
+      }
+
+      if (isset($values['sql_where']))
+      {
+        $this->sqlJoin[] = $values['sql_where'];
+      }
+
+      if (isset($values['scope_msg']))
+      {
+        $this->scope_msg[] = $values['sql_where'];
+      }
     }
 
-    if ($options['no-overwrite'])
+    protected function buildQuery($options, &$scope)
     {
-      $query .= ' LEFT JOIN digital_object child ON do.id = child.parent_id';
-      $query .= ' WHERE do.parent_id IS NULL AND child.id IS NULL';
+      // Get all master digital objects
+      $query = 'SELECT do.id
+        FROM digital_object do JOIN information_object io ON do.information_object_id = io.id';
+
+      // Add any additional joins required
+      $query .= implode(' ', $this->sqlJoin);
+
+      // Build where clause using 'AND'
+      $query .= "WHERE "
+      $query .= array_unshift($)
+      $query .= implode(' AND ');
+
+
+      return $query;
     }
 
-    // Final confirmation (skip if no-overwrite)
-    if (!$options['force'] && !$options['no-overwrite'])
+    // Confirm overwrite of existing derivatives
+    if (!$this->confirm($cscope, $options))
     {
-      $confirm = array();
-
-      if ($options['slug'])
-      {
-        $confirm[] = 'Continuing will regenerate the dervivatives for ALL descendants of';
-        $confirm[] = '"'.$options['slug'].'"';
-      }
-      else
-      {
-        $confirm[] = 'Continuing will regenerate the dervivatives for ALL digital objects';
-      }
-
-      $confirm[] = 'This will PERMANENTLY DELETE existing derivatives you chose to regenerate';
-      $confirm[] = '';
-      $confirm[] = 'Continue? (y/N)';
-
-      if (!$this->askConfirmation($confirm, 'QUESTION_LARGE', false))
-      {
-        $this->logSection('digital object', 'Bye!');
-
-        return 1;
-      }
+      return 1;
     }
 
     // Do work
@@ -224,5 +245,43 @@ EOF;
     // Destroy out-of-scope objects
     QubitDigitalObject::clearCache();
     QubitInformationObject::clearCache();
+  }
+
+  protected function confirm($scope, $options)
+  {
+    // Skip confirmation
+    if ($options['force'] || $options['no-overwrite'])
+    {
+      return true;
+    }
+
+    $confirm[0] = 'Continuing will regenerate the dervivatives for ';
+
+    // Default confirmation message
+    if (0 < count($scope))
+    {
+      $confirm[0] .= implode(', ', $sscope);
+    }
+    else
+    {
+      $confirm[0] .= 'ALL ';
+    }
+
+    $confirm[0] .= 'digital objects';
+
+    $confirm[] = 'This will PERMANENTLY DELETE existing derivatives you chose to regenerate';
+    $confirm[] = '';
+    $confirm[] = 'Continue? (y/N)';
+
+    if ($this->askConfirmation($confirm, 'QUESTION_LARGE', false))
+    {
+      return true;
+    }
+    else
+    {
+      $this->logSection('digital object', 'Bye!');
+
+      return false;
+    }
   }
 }
