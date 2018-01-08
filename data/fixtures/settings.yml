@@ -1153,6 +1153,12 @@ QubitSetting:
     source_culture: en
     value:
       en: 0
+  Qubit_Settings_permissiveSlugCreation:
+    name: permissive_slug_creation
+    editable: 1
+    source_culture: en
+    value:
+      en: 0
   Qubit_Settings_generateReportsAsPubUser:
     name: generate_reports_as_pub_user
     editable: 1
