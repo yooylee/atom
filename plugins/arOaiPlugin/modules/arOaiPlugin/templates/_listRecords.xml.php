@@ -22,7 +22,11 @@
     <?php endif; ?>
   <?php endforeach; ?>
   <?php foreach ($identifiersWithMissingCacheFiles as $identifier): ?>
-    <error code="cannotDisseminateFormat">The metadata format identified by the value given for the metadataPrefix argument is available for item <?php echo $identifier; ?>.</error>
+    <?php if ($metadataPrefix == 'oai_ead'): ?>
+      <error code="noRecordsMatch">The metadata format identified by the value given for the metadataPrefix argument is unavailable for item <?php echo $identifier; ?>.</error>
+    <?php else: ?>
+      <error code="cannotDisseminateFormat">The metadata format identified by the value given for the metadataPrefix argument is unavailable for item <?php echo $identifier; ?>.</error>
+    <?php endif; ?>
   <?php endforeach; ?>
   <?php if ($remaining > 0): ?>
     <resumptionToken><?php echo $resumptionToken ?></resumptionToken>
