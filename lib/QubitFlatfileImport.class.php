@@ -813,6 +813,11 @@ class QubitFlatfileImport
       $this->setInformationObjectByFields();
     }
 
+    if (null === $this->object)
+    {
+      $this->object = QubitInformationObject::getById($legacyId);
+    }
+
     $this->checkInformationObjectMatchLimit(); // Handle --limit option.
 
     if (null === $this->object)
