@@ -27,6 +27,10 @@ class arMarcXmlParser extends QubitSaxParser
   protected $currentTagAttr;
   protected $currentLabel;
 
+  protected $parentTerm;
+  protected $broaderTerms;
+  protected $relatedTerms;
+
   public function __construct($dispatcher, $formatter, $taxonomy)
   {
     parent::__construct();
@@ -41,12 +45,12 @@ class arMarcXmlParser extends QubitSaxParser
    * Tags functions
    */
 
-  protected function marc_collectionTagInit()
+  protected function mx_collectionTagInit()
   {
     $this->log(sprintf('Starting collection import to "%s" taxonomy:', $this->taxonomy));
   }
 
-  protected function marc_recordTagInit()
+  protected function mx_recordTagInit()
   {
     // Initiate term data
     $this->termData = array(
@@ -59,7 +63,7 @@ class arMarcXmlParser extends QubitSaxParser
     );
   }
 
-  protected function marc_datafieldTagInit()
+  protected function mx_datafieldTagInit()
   {
     // Get current tag, needed to determine termData
     // field in the subfield tag function bellow
@@ -73,7 +77,7 @@ class arMarcXmlParser extends QubitSaxParser
     );
   }
 
-  protected function marc_subfieldTag()
+  protected function mx_subfieldTag()
   {
     // A tag attribute from the datafield is required
     if (!isset($this->currentTagAttr))
@@ -149,7 +153,7 @@ class arMarcXmlParser extends QubitSaxParser
     }
   }
 
-  protected function marc_datafieldTag()
+  protected function mx_datafieldTag()
   {
     // Save current label to term data if needed
     if (!isset($this->currentLabel['type']) || strlen($this->currentLabel['value']) == 0)
@@ -178,25 +182,57 @@ class arMarcXmlParser extends QubitSaxParser
     }
   }
 
-  protected function marc_recordTag()
+  protected function mx_recordTag()
   {
-    $this->log('Creating: ' . $this->termData['prefLabel']);
-
-    /*
-    if ($this->termData['prefLabel'] == 'Galleria delle statue (Museo Pio-Clementino, Vatican City)')
+    if (!isset($this->parentTerm))
     {
-      $this->log(json_encode($this->termData, JSON_PRETTY_PRINT));
+      $term = new QubitTerm();
+      $term->taxonomy = $this->taxonomy;
+      $term->name = 'FAST Data Ontology';
+      $term->culture = 'en';
+      $term->save();
+
+      // Add display note
+      $note = new QubitNote;
+      $note->objectId = $term->id;
+      $note->typeId = QubitTerm::DISPLAY_NOTE_ID;
+      $note->content = 'This ontology contains information from FAST (Faceted Application of Subject Terminology) Data which is made available by OCLC Online Computer Library Center, Inc. under the ODC Attribution License.';
+      $note->culture = 'en';
+      $note->save();
+
+      $this->parentTerm = $term;
     }
 
+    $this->log('Creating: ' . $this->termData['prefLabel']);
+
+    // Add term
     $this->term = new QubitTerm();
-    $contHeadIdent = 'http://id.worldcat.org/fast/' . $this->termData['fastIdentifier'];
+    $this->term->taxonomy = $this->taxonomy;
+    $this->term->parentId = $this->parentTerm->id;
+    $this->term->name = $this->termData['prefLabel'];
     $this->term->save();
-    */
+
+    // Add alternative labels
+    foreach($this->termData['altLabels'] as $label)
+    {
+      $otherName = new QubitOtherName;
+      $otherName->objectId = $this->term->id;
+      $otherName->name = $label;
+      $otherName->save();
+    }
+
+    // Add source note
+    $note = new QubitNote;
+    $note->objectId = $this->term->id;
+    $note->typeId = QubitTerm::SOURCE_NOTE_ID;
+    $note->content = 'http://id.worldcat.org/fast/' . $this->termData['fastIdentifier'];
+    $note->culture = 'en';
+    $note->save();
 
     $this->termCounter++;
   }
 
-  protected function marc_collectionTag()
+  protected function mx_collectionTag()
   {
     $this->log(sprintf('Collection import finished, %d terms have been imported.', $this->termCounter));
   }
@@ -266,5 +302,9 @@ class arMarcXmlParser extends QubitSaxParser
 
         break;
     }
+  }
+
+  public function finish()
+  {
   }
 }
