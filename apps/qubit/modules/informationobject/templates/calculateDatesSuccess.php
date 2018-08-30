@@ -17,26 +17,32 @@
     <div id="content">
 
       <fieldset class="collapsible">
+        <legend>Update an existing date range</legend>
         <div class="fieldset-wrapper">
-
           <?php if (count($events)): ?>
-            <p>Please select either an event or an event type:</p>
-
             <?php echo $form->eventId->renderRow() ?>
           <?php endif; ?>
 
-          <?php if (count($eventTypes)): ?>
-            <?php echo $form->eventTypeId->renderRow() ?>
-          <?php endif; ?>
-
-          <h6>
-            <?php echo __('Note: While the date range update is running, the selected description should not be edited.') ?>
-            <?php echo __('You can check %1% page to determine the current status of the update job.',
-              array('%1%' => link_to(__('Manage jobs'), array('module' => 'jobs', 'action' => 'browse')))) ?>
-          </h6>
-
+          <div class="alert">
+            <?php echo __("Warning: Updating an existing date range will permanently overwrite the current dates.") ?>
+          </div>
         </div>
       </fieldset>
+
+      <fieldset class="collapsible">
+        <legend>or, Create a new date range</legend>
+        <div class="fieldset-wrapper">
+          <?php if (count($descendantEventTypes)): ?>
+            <?php echo $form->eventTypeId->renderRow() ?>
+          <?php endif; ?>
+        </div>
+      </fieldset>
+
+      <div class="alert-info">
+        <?php echo __('Note: While the date range update is running, the selected description should not be edited.') ?>
+        <?php echo __('You can check %1% page to determine the current status of the update job.',
+          array('%1%' => link_to(__('Manage jobs'), array('module' => 'jobs', 'action' => 'browse')))) ?>
+      </div>
 
     </div>
 

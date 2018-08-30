@@ -32,10 +32,9 @@ class InformationObjectCalculateDatesAction extends DefaultEditAction
       case 'eventId':
         if (count($this->events))
         {
-          $eventIdChoices = array(0 => $this->i18n->__('--Select--')) + $this->events;
-          $this->form->setWidget($name, new sfWidgetFormSelect(array('choices' => $eventIdChoices)));
+          $this->form->setWidget($name, new sfWidgetFormSelectRadio(array('choices' => $this->events)));
 
-          $label = $this->i18n->__('Event');
+          $label = $this->i18n->__('Select a date range to overwrite:');
           $this->form->setValidator($name, new sfValidatorInteger);
           $this->form->getWidgetSchema()->$name->setLabel($label);
         }
@@ -45,10 +44,9 @@ class InformationObjectCalculateDatesAction extends DefaultEditAction
       case 'eventTypeId':
         if (count($this->descendantEventTypes))
         {
-          $eventTypeChoices = array(0 => $this->i18n->__('--Select--')) + $this->descendantEventTypes;
-          $this->form->setWidget($name, new sfWidgetFormSelect(array('choices' => $eventTypeChoices)));
+          $this->form->setWidget($name, new sfWidgetFormSelectRadio(array('choices' => $this->descendantEventTypes)));
 
-          $label = $this->i18n->__('Event type');
+          $label = $this->i18n->__('Select the new date type:');
           $this->form->setValidator($name, new sfValidatorInteger);
           $this->form->getWidgetSchema()->$name->setLabel($label);
         }
@@ -119,13 +117,6 @@ class InformationObjectCalculateDatesAction extends DefaultEditAction
           $this->redirect(array($this->resource, 'module' => 'informationobject'));
         }
       }
-    }
-
-    // Only show this notification if event(s) exist to select
-    if (count($this->events))
-    {
-      $message = $this->i18n->__("Warning: If selecting an event, rather than an event type, the selected event's date range will be overwritten.");
-      $this->getUser()->setFlash('notice', $message);
     }
   }
 
