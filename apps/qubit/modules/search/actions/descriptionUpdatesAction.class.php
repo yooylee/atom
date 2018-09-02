@@ -192,11 +192,11 @@ class SearchDescriptionUpdatesAction extends sfAction
       switch($this->form->getValue('dateOf'))
       {
         case 'CREATED_AT':
-          $criteria->add(QubitAuditLog::ACTION_TYPE_ID, QubitTerm::USER_ACTION_CREATION_ID);
+          $criteria->add(QubitAuditLog::ACTION_TYPE_ID, QubitAuditLog::getActionTypeId('Creation'));
           break;
 
         case 'UPDATED_AT':
-          $criteria->add(QubitAuditLog::ACTION_TYPE_ID, QubitTerm::USER_ACTION_MODIFICATION_ID);
+          $criteria->add(QubitAuditLog::ACTION_TYPE_ID, QubitAuditLog::getActionTypeId('Modification'));
           break;
       }
     }

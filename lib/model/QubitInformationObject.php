@@ -210,23 +210,25 @@ class QubitInformationObject extends BaseInformationObject
 
   public function save($connection = null)
   {
-    // Determine user action ID
-    $userActionId = ($this->new)
-      ? QubitTerm::USER_ACTION_CREATION_ID
-      : QubitTerm::USER_ACTION_MODIFICATION_ID;
+    // Determine user action type
+    $userActionType = ($this->new) ? 'Creation' : 'Modification';
 
     parent::save($connection);
 
-    // Log creation/modification
+    // Attempt log creation/modification
     if ($this->id != QubitInformationObject::ROOT_ID && sfConfig::get('app_audit_log_enabled', false))
     {
-      $log = new QubitAuditLog();
-      $log->objectId = $this->id;
-      $currentUser = sfContext::getInstance()->getUser();
-      $log->userId = $currentUser->getUserID();
-      $log->userName = $currentUser->getUserName();
-      $log->actionTypeId = $userActionId;
-      $log->save();
+      // Get user action type's ID and add an audit log entry
+      if (null !== $userActionTypeId = QubitAuditLog::getActionTypeId($userActionType))
+      {
+        $log = new QubitAuditLog();
+        $log->objectId = $this->id;
+        $currentUser = sfContext::getInstance()->getUser();
+        $log->userId = $currentUser->getUserID();
+        $log->userName = $currentUser->getUserName();
+        $log->actionTypeId = $userActionTypeId;
+        $log->save();
+      }
     }
 
     // Save child information objects

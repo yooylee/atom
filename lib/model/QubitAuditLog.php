@@ -12,6 +12,20 @@
  *
  * @package    lib.model
  */
-class QubitAuditLog extends BaseAuditLog {
+class QubitAuditLog extends BaseAuditLog
+{
+  public static function getActionTypeId($actionName);
+  {
+    // Get user action type term
+    $criteria = new Criteria;
+    $criteria->add(QubitTerm::TAXONOMY_ID, QubitTaxonomy::USER_ACTION_ID);
+    $criteria->addJoin(QubitTerm::ID, QubitTermI18n::ID);
+    $criteria->add(QubitTermI18n::NAME, $actionName);
+    $criteria->add(QubitTermI18n::CULTURE, 'en');
 
-} // QubitAuditLog
+    if (null !== $userActionTerm = QubitTerm::getOne($criteria))
+    {
+      return $userActionTerm->id;
+    }
+  }
+}

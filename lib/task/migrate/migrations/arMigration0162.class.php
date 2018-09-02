@@ -39,21 +39,22 @@ class arMigration0162
     $taxonomy->setName('User actions', array('culture' => 'en'));
     $taxonomy->save();
 
-    $terms = array(
-      QubitTerm::USER_ACTION_CREATION_ID => 'Creation',
-      QubitTerm::USER_ACTION_MODIFICATION_ID => 'Modification'
+    $userActionTypes = array(
+      'Creation',
+      'Modification'
     );
 
-    foreach ($terms as $id => $name)
+    foreach ($userActionTypes as $name)
     {
-      QubitMigrate::bumpTerm($id, $configuration);
-      $term = new QubitTerm;
-      $term->id = $id;
-      $term->parentId = QubitTerm::ROOT_ID;
-      $term->taxonomyId = QubitTaxonomy::USER_ACTION_ID;
-      $term->sourceCulture = 'en';
-      $term->setName($name, array('culture' => 'en'));
-      $term->save();
+      if (null === QubitAuditLog::getActionTypeId($name))
+      {
+        $term = new QubitTerm;
+        $term->parentId = QubitTerm::ROOT_ID;
+        $term->taxonomyId = QubitTaxonomy::USER_ACTION_ID;
+        $term->sourceCulture = 'en';
+        $term->setName($name, array('culture' => 'en'));
+        $term->save();
+      }
     }
 
     // Add table audit_log
