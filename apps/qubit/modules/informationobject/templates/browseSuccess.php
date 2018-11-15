@@ -29,6 +29,7 @@
     <section id="facets">
 
           <?php echo __('Elf lord') ?>
+          <?php echo __('Dog salad') ?>
 
       <div class="visible-phone facets-header">
         <a class="x-btn btn-wide">
