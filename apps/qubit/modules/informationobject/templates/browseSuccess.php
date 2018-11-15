@@ -28,6 +28,8 @@
 
     <section id="facets">
 
+          <?php echo __('Elf lord') ?>
+
       <div class="visible-phone facets-header">
         <a class="x-btn btn-wide">
           <i class="fa fa-filter"></i>
