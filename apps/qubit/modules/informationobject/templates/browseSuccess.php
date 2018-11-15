@@ -30,6 +30,7 @@
 
           <?php echo __('Elf lord') ?>
           <?php echo __('Dog salad') ?>
+          <?php echo __('Chicken town') ?>
 
       <div class="visible-phone facets-header">
         <a class="x-btn btn-wide">
