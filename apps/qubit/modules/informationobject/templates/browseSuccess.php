@@ -28,6 +28,7 @@
 
     <section id="facets">
 
+          <?php echo __('Owl bro') ?>
           <?php echo __('Orc legs') ?>
           <?php echo __('Horse buddy') ?>
           <?php echo __('Elf lord') ?>
