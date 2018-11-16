@@ -28,6 +28,7 @@
 
     <section id="facets">
 
+          <?php echo __('Clown town') ?>
           <?php echo __('Zap strap') ?>
           <?php echo __('Owl bro') ?>
           <?php echo __('Orc legs') ?>
