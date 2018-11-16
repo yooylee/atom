@@ -28,6 +28,7 @@
 
     <section id="facets">
 
+          <?php echo __('Total hat') ?>
           <?php echo __('Bunny laugh') ?>
           <?php echo __('Clown town') ?>
           <?php echo __('Zap strap') ?>
