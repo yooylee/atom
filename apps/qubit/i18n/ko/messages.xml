@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
 <xliff version="1.0">
-  <file datatype="plaintext" date="2018-11-15T16:46:49Z" original="messages" product-name="messages" source-language="en" target-language="ko">
+  <file datatype="plaintext" date="2018-11-15T16:44:12Z" original="messages" product-name="messages" source-language="en" target-language="ko">
     <header/>
     <body>
       <trans-unit id="f191b2120c9efa7b0c1411d6989e325561707ddb">
@@ -4724,68 +4724,68 @@
         <target>&#xB2F9;&#xC2E0;</target>
         <note>https://github.com/artefactual/atom/blob/master/apps/qubit/modules/user/templates/indexSuccess.php</note>
       </trans-unit>
-      <trans-unit id="1">
+      <trans-unit id="b09c13d9215513e4ac66885d96eeef266a0ba0b8">
         <source>Please make a selection.</source>
         <target/>
       </trans-unit>
-      <trans-unit id="2">
+      <trans-unit id="2a6b62e341e9619ada4d7b5545cde10e2d84aa07">
         <source>Update an existing date range</source>
         <target/>
       </trans-unit>
-      <trans-unit id="3">
+      <trans-unit id="7da6e95c1b0869b6ebd19f3fe65e838aa569cc34">
         <source>Select a date range to overwrite:</source>
         <target/>
       </trans-unit>
-      <trans-unit id="4">
+      <trans-unit id="809193e142e7b213b8853749f78aa4d47f200436">
         <source>Updating an existing date range will permanently overwrite the current dates.</source>
         <target/>
       </trans-unit>
-      <trans-unit id="5">
+      <trans-unit id="1627dc1d38a74d13aae0d602bc56d416d0e53133">
         <source>or, create a new date range</source>
         <target/>
       </trans-unit>
-      <trans-unit id="6">
+      <trans-unit id="c6328f0c08059e2984280e71ef824e40f5761f9e">
         <source>Select the new date type:</source>
         <target/>
       </trans-unit>
-      <trans-unit id="1">
-        <source>Total hat</source>
-        <target/>
-      </trans-unit>
-      <trans-unit id="2">
+      <trans-unit id="d6bd2239d48c48d3012fd4312620d7fe0e51c5b2">
         <source>Bunny laugh</source>
         <target/>
       </trans-unit>
-      <trans-unit id="3">
+      <trans-unit id="0ee839f741bdb4e01dd04384c6151a00072862dc">
         <source>Clown town</source>
         <target/>
       </trans-unit>
-      <trans-unit id="4">
+      <trans-unit id="e5ae8901614544a298f8c087f3d69e699b7dff1e">
         <source>Zap strap</source>
         <target/>
       </trans-unit>
-      <trans-unit id="5">
+      <trans-unit id="3fae715f288d7fec2bc782c26c85c07c51053980">
         <source>Owl bro</source>
         <target/>
       </trans-unit>
-      <trans-unit id="6">
+      <trans-unit id="6f940701b3a607e667303d10e042bab99aac46b5">
         <source>Orc legs</source>
         <target/>
       </trans-unit>
-      <trans-unit id="7">
+      <trans-unit id="41999374729d43a1a39dbabc41f64bf617e9ee58">
         <source>Horse buddy</source>
         <target/>
       </trans-unit>
-      <trans-unit id="8">
+      <trans-unit id="100bc6fe2362bf31a552494501145d958cbef204">
         <source>Elf lord</source>
         <target/>
       </trans-unit>
-      <trans-unit id="9">
+      <trans-unit id="6efb7ccb7941313e397fb65a8501b573fc4f2e16">
         <source>Dog salad</source>
         <target/>
       </trans-unit>
-      <trans-unit id="10">
+      <trans-unit id="a8b3e9847cd1275c9a25fba48801d04676117c3f">
         <source>Chicken town</source>
+        <target/>
+      </trans-unit>
+      <trans-unit id="5ee83dbf8fa7a3a267ee7b886480dec3dfa96e0c">
+        <source>Total hat</source>
         <target/>
       </trans-unit>
     </body>
