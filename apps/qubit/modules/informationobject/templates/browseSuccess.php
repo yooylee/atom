@@ -26,6 +26,8 @@
 
   <?php slot('sidebar') ?>
 
+<?php echo __('Cool animal pal') ?>
+
     <section id="facets">
 
       <div class="visible-phone facets-header">
