@@ -28,6 +28,7 @@
 
 <?php echo __('Cool animal pal') ?>
 <?php echo __('Raccoon out there') ?>
+<?php echo __('Space guy') ?>
 
     <section id="facets">
 
