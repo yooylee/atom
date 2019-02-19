@@ -77,6 +77,7 @@ class QubitTerm extends BaseTerm
     REFERENCE_ID = 141,
     THUMBNAIL_ID = 142,
     COMPOUND_ID = 143,
+    LOCAL_FILE_ID = 191,
 
     // Physical object type taxonomy
     LOCATION_ID = 144,
